@@ -1,0 +1,37 @@
+{% extends "shop/base.html" %}
+{% block title %}Delivery details — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page checkout-page">
+    <p class="eyebrow"><span class="eyebrow-line"></span>ALMOST YOURS</p>
+    <h1>Delivery details.</h1>
+    <p class="checkout-intro">Delivery is currently offered around 5 km from the store. Share your address and Sri Laxmi Silver will confirm coverage, delivery charges, and availability on WhatsApp before the order is final.</p>
+    <div class="checkout-layout">
+        <form class="checkout-form" method="post">
+            <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+            <label for="customer-name">Your name<input id="customer-name" name="name" value="{{ customer_name }}" autocomplete="name" maxlength="120" required></label>
+            <label for="customer-phone">WhatsApp / phone number<input id="customer-phone" name="phone" type="tel" autocomplete="tel" placeholder="+91 98765 43210" maxlength="30" required></label>
+            <label for="customer-email">Account email<input id="customer-email" name="email" type="email" value="{{ customer_email }}" autocomplete="email" maxlength="255" required></label>
+            <label for="delivery-address">Delivery address<textarea id="delivery-address" name="address" autocomplete="street-address" minlength="8" maxlength="1000" rows="4" required></textarea></label>
+            <label for="delivery-pin">6-digit PIN code<input id="delivery-pin" name="postal_code" inputmode="numeric" pattern="[0-9]{6}" autocomplete="postal-code" maxlength="6" required></label>
+            <div class="checkout-assurance"><span>✦</span><p><strong>About 5 km from the store · estimate within 7 days</strong><small>The store confirms delivery coverage and charges with you on WhatsApp before the order is final.</small></p></div>
+            <button class="button button-gold checkout-button" type="submit">Prepare WhatsApp order <span>↗</span></button>
+        </form>
+        <aside class="cart-summary checkout-summary"><p class="product-category">YOUR ORDER</p>
+            <form method="post" class="coupon-form">
+                <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                <input type="hidden" name="action" value="apply_coupon">
+                <label for="coupon-code">Coupon code</label>
+                <input id="coupon-code" name="coupon_code" maxlength="40" value="{{ coupon.code if coupon else '' }}">
+                <button class="button button-outline" type="submit">Apply code</button>
+            </form>
+            {% if coupon %}<p class="summary-note">Applied: {{ coupon.code }} · discount {{ discount|inr }}</p>{% endif %}
+            {% for row in rows %}<div class="summary-row"><span>{{ row.product.name }} × {{ row.quantity }}</span><strong>{{ row.line_total|inr }}</strong></div>{% endfor %}
+            <div class="summary-row summary-total"><span>Product subtotal</span><strong>{{ subtotal|inr }}</strong></div>
+            {% if coupon %}<div class="summary-row"><span>Coupon {{ coupon.code }}</span><strong>−{{ discount|inr }}</strong></div>{% endif %}
+            <div class="summary-row summary-total"><span>Products after discount</span><strong>{{ (subtotal - discount)|inr }}</strong></div>
+            <p class="summary-note">Delivery fee is not included. Coverage and charges are confirmed by the store.</p>
+            <a class="continue-shopping" href="{{ url_for('shop.cart') }}">← Back to your bag</a>
+        </aside>
+    </div>
+</section>
+{% endblock %}

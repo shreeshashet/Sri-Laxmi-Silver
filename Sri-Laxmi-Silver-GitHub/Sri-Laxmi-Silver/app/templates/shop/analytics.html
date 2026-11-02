@@ -1,0 +1,11 @@
+{% extends "shop/base.html" %}
+{% block title %}Shop insights — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page admin-page">
+    <div class="admin-heading"><div><p class="eyebrow"><span class="eyebrow-line"></span>STORE OVERVIEW</p><h1>Shop insights.</h1><p>Order and catalog activity recorded by this shop.</p></div><a class="button button-outline" href="{{ url_for('shop.admin') }}">Back to management ↗</a></div>
+    <div class="analytics-grid"><article class="analytics-card"><span>Catalog listings</span><strong>{{ product_count }}</strong><small>Includes sample listings</small></article><article class="analytics-card"><span>Published real products</span><strong>{{ live_product_count }}</strong><small>Non-demo listings currently visible</small></article>
+        {% for status, count in orders_by_status %}<article class="analytics-card"><span>{{ statuses.get(status, status) }}</span><strong>{{ count }}</strong><small>Orders recorded</small></article>{% endfor %}
+    </div>
+    <p class="analytics-note">These insights cover store catalog and order records only. Site traffic, ad performance and payment reports are not connected yet.</p>
+</section>
+{% endblock %}

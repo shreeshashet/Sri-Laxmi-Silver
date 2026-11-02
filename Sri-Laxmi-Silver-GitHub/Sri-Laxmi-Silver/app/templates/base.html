@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}Sri Laxmi Silver{% endblock %}
+    </title>
+
+    <meta
+        name="description"
+        content="Sri Laxmi Silver — Silver Jewellery & Articles"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/srx.css') }}"
+    >
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <div class="srx-app">
+
+        <!-- =========================
+             TOP NAVIGATION
+        ========================== -->
+        <header class="srx-navbar">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="srx-brand"
+            >
+                <span class="srx-brand-mark">S</span>
+
+                <span class="srx-brand-text">
+                    Sri Laxmi Silver
+                </span>
+            </a>
+
+            <nav class="srx-nav">
+
+                {% if current_user.is_authenticated %}
+
+                    <a
+                        href="{{ url_for('dashboard.index') }}"
+                        class="srx-nav-link"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="{{ url_for('builder.new_website') }}"
+                        class="srx-nav-link srx-nav-primary"
+                    >
+                        + New Website
+                    </a>
+
+                    <a
+                        href="{{ url_for('auth.logout') }}"
+                        class="srx-nav-link"
+                    >
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('auth.login') }}"
+                        class="srx-nav-link"
+                    >
+                        Login
+                    </a>
+
+                    <a
+                        href="{{ url_for('auth.register') }}"
+                        class="srx-nav-link srx-nav-primary"
+                    >
+                        Get Started
+                    </a>
+
+                {% endif %}
+
+            </nav>
+
+        </header>
+
+
+        <!-- =========================
+             FLASH MESSAGES
+        ========================== -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="srx-flashes">
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="srx-alert srx-alert-{{ category }}"
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="srx-main">
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+        <footer class="srx-footer">
+
+            <div class="srx-footer-inner">
+
+                <div>
+                    <strong>Sri Laxmi Silver</strong>
+                    <span>
+                        AI Website Builder
+                    </span>
+                </div>
+
+                <div>
+                    © {{ current_year if current_year is defined else 2026 }} Sri Laxmi Silver
+                </div>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script
+        src="{{ url_for('static', filename='js/srx.js') }}"
+    ></script>
+
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

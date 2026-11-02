@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}{{ website.name }} — Editor{% endblock %}
+
+{% block content %}
+
+<div class="builder-editor">
+
+    <div class="builder-editor-header">
+
+        <div>
+            <div class="eyebrow">SRI LAXMI SILVER WEBSITE EDITOR</div>
+
+            <h1>{{ website.name }}</h1>
+
+            <p>
+                Edit your generated website pages and sections.
+            </p>
+        </div>
+
+        <div>
+            <a
+                href="{{ url_for('dashboard.index') }}"
+                class="secondary-button"
+            >
+                ← Dashboard
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="editor-layout">
+
+        <aside class="editor-sidebar">
+
+            <div class="sidebar-title">
+                Pages
+            </div>
+
+            {% if pages %}
+
+                {% for page in pages %}
+
+                    <a
+                        href="#page-{{ page.id }}"
+                        class="editor-page-link"
+                    >
+                        <span>
+                            {{ page.title }}
+                        </span>
+
+                        <small>
+                            /{{ page.slug }}
+                        </small>
+                    </a>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+                    No pages found.
+                </div>
+
+            {% endif %}
+
+        </aside>
+
+
+        <main class="editor-main">
+
+            {% if pages %}
+
+                {% for page in pages %}
+
+                    <section
+                        id="page-{{ page.id }}"
+                        class="editor-page"
+                    >
+
+                        <div class="editor-page-header">
+
+                            <div>
+                                <span class="page-slug">
+                                    /{{ page.slug }}
+                                </span>
+
+                                <h2>
+                                    {{ page.title }}
+                                </h2>
+                            </div>
+
+                            {% if page.is_homepage %}
+                                <span class="status-badge">
+                                    Homepage
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="editor-sections">
+
+                            {% if page.sections %}
+
+                                {% for section in page.sections %}
+
+                                    <article class="editor-section">
+
+                                        <div class="editor-section-header">
+
+                                            <div>
+                                                <span class="section-position">
+                                                    {{ section.position + 1 }}
+                                                </span>
+
+                                                <strong>
+                                                    {{ section.section_type|replace("-", " ")|title }}
+                                                </strong>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="editor-section-content">
+
+                                            {% if section.content %}
+
+                                                {% for key, value in section.content.items() %}
+
+                                                    <div class="editor-field">
+
+                                                        <label>
+                                                            {{ key|replace("_", " ")|title }}
+                                                        </label>
+
+                                                        {% if value is string %}
+
+                                                            <textarea
+                                                                rows="4"
+                                                            >{{ value }}</textarea>
+
+                                                        {% elif value is sequence and value is not string %}
+
+                                                            <div class="editor-list">
+
+                                                                {% for item in value %}
+
+                                                                    <div class="editor-list-item">
+
+                                                                        {% if item is mapping %}
+
+                                                                            {% for item_key, item_value in item.items() %}
+
+                                                                                <div>
+                                                                                    <strong>
+                                                                                        {{ item_key|replace("_", " ")|title }}
+                                                                                    </strong>
+
+                                                                                    <p>
+                                                                                        {{ item_value }}
+                                                                                    </p>
+                                                                                </div>
+
+                                                                            {% endfor %}
+
+                                                                        {% else %}
+
+                                                                            <p>
+                                                                                {{ item }}
+                                                                            </p>
+
+                                                                        {% endif %}
+
+                                                                    </div>
+
+                                                                {% endfor %}
+
+                                                            </div>
+
+                                                        {% else %}
+
+                                                            <textarea rows="4">{{ value }}</textarea>
+
+                                                        {% endif %}
+
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            {% else %}
+
+                                                <div class="empty-state">
+                                                    This section has no content.
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </article>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <div class="empty-state">
+                                    No sections found for this page.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h2>No pages generated</h2>
+
+                    <p>
+                        Generate your website first before opening the editor.
+                    </p>
+
+                    <a
+                        href="{{ url_for('builder.new_website') }}"
+                        class="primary-button"
+                    >
+                        Create Website
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}

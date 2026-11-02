@@ -1,0 +1,20 @@
+{% extends "shop/base.html" %}
+{% block title %}My orders — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page account-page">
+    <p class="eyebrow"><span class="eyebrow-line"></span>YOUR ACCOUNT</p>
+    <h1>My orders.</h1>
+    <p class="info-page-lead">Signed in as {{ current_user.email }}. Order updates are confirmed by the store on WhatsApp.</p>
+    <a class="continue-shopping" href="{{ url_for('auth.logout') }}">Sign out</a>
+    {% for order in orders %}
+        <article class="account-order">
+            <header><strong>{{ order.order_number }}</strong><span>{{ statuses[order.status] }}</span></header>
+            <p>{{ order.created_at.strftime("%d %b %Y") }} · {{ order.total_paise|inr }}</p>
+            <ul>{% for item in order.items %}<li>{{ item.product_name }} × {{ item.quantity }}</li>{% endfor %}</ul>
+            <p>{{ order.delivery_address }}, {{ order.delivery_postal_code }}</p>
+        </article>
+    {% else %}
+        <div class="empty-catalog-state"><span>✦</span><h2>No orders yet</h2><p>Your submitted orders will appear here.</p><a class="button button-gold" href="{{ url_for('shop.catalog') }}">Explore the shop ↗</a></div>
+    {% endfor %}
+</section>
+{% endblock %}

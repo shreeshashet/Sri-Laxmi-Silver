@@ -1,0 +1,22 @@
+{% extends "shop/base.html" %}
+{% block title %}Collections — Sri Laxmi Silver{% endblock %}
+{% block description %}Explore the curated jewellery and keepsake collections from Sri Laxmi Silver, Bengaluru.{% endblock %}
+{% block content %}
+<section class="info-page collection-index">
+    <p class="eyebrow"><span class="eyebrow-line"></span>CURATED FOR YOU</p>
+    <h1>Our collections.</h1>
+    <p class="info-page-lead">Browse thoughtfully grouped pieces from Sri Laxmi Silver.</p>
+    <div class="collection-grid">
+        {% for collection in collections %}
+        <a class="collection-tile" href="{{ url_for('shop.collection_detail', slug=collection.slug) }}">
+            <span class="product-category">{{ collection.products|selectattr('is_published')|list|length }} pieces</span>
+            <h2>{{ collection.name }}</h2>
+            <p>{{ collection.description or "Explore this collection from Sri Laxmi Silver." }}</p>
+            <span class="collection-tile-link">Explore collection ↗</span>
+        </a>
+        {% else %}
+        <div class="empty-catalog-state"><span>✺</span><h3>New collections are on their way.</h3><p>Please browse the complete shop for current designs.</p><a class="button button-outline" href="{{ url_for('shop.catalog') }}">Shop all pieces ↗</a></div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

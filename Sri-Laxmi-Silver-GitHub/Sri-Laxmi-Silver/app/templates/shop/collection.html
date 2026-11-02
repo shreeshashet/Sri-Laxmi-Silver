@@ -1,0 +1,17 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ collection.name }} — Sri Laxmi Silver{% endblock %}
+{% block description %}{{ collection.description[:155] if collection.description else "Explore " ~ collection.name ~ " from Sri Laxmi Silver, Bengaluru." }}{% endblock %}
+{% block content %}
+<section class="catalog-section collection-detail">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ url_for('shop.catalog') }}">Shop</a><span>›</span><a href="{{ url_for('shop.collections') }}">Collections</a><span>›</span><span>{{ collection.name }}</span></nav>
+    <div class="catalog-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span>CURATED COLLECTION</p><h2>{{ collection.name }}</h2>{% if collection.description %}<p class="info-page-lead">{{ collection.description }}</p>{% endif %}</div>
+        <p class="catalog-count">{{ products|length }} pieces</p>
+    </div>
+    <div class="product-grid catalog-grid">
+        {% for product in products %}{% include "shop/_product_card.html" %}{% else %}
+        <div class="empty-catalog-state"><span>✺</span><h3>Pieces are being added to this collection.</h3><p>Browse the complete shop or check back soon.</p><a class="button button-outline" href="{{ url_for('shop.catalog') }}">Shop all pieces ↗</a></div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

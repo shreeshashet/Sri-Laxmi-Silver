@@ -1,0 +1,77 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ product.name }} — Sri Laxmi Silver{% endblock %}
+{% block description %}{{ product.description[:155] if product.description else product.name ~ " at Sri Laxmi Silver, Bengaluru." }}{% endblock %}
+{% block og_title %}{{ product.name }} — Sri Laxmi Silver{% endblock %}
+{% block og_description %}{{ product.description[:155] if product.description else "Discover " ~ product.name ~ " at Sri Laxmi Silver, Bengaluru." }}{% endblock %}
+{% block content %}
+<section class="product-detail">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ url_for('home') }}">Home</a><span>›</span><a href="{{ url_for('shop.catalog') }}">Shop</a><span>›</span><span>{{ product.name }}</span></nav>
+    <div class="product-detail-grid">
+        <div class="product-detail-image"><img src="{{ product.image_url }}" alt="{{ product.name }}"></div>
+        <div class="product-detail-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span>{{ product.category }}</p>
+            {% if product.collection and product.collection.is_published %}<a class="product-collection-link" href="{{ url_for('shop.collection_detail', slug=product.collection.slug) }}">{{ product.collection.name }} collection ↗</a>{% endif %}
+            <h1>{{ product.name }}</h1>
+            {% if product.is_demo %}<p class="product-price-note large">Sample design · not for sale</p>{% elif product.price_paise is not none %}<p class="product-price large">{{ product.price_paise|inr }}</p>{% else %}<p class="product-price-note large">Price confirmed on WhatsApp</p>{% endif %}
+            <p class="product-description">{{ product.description or "Discover this piece from Sri Laxmi Silver." }}</p>
+            {% if product.is_demo %}
+                <p class="sample-warning">This is a sample listing, not confirmed store inventory. Ask Sri Laxmi Silver about current products and prices.</p>
+            {% elif product.stock_quantity > 0 %}
+                <p class="availability"><span></span> In stock · {{ product.stock_quantity }} available</p>
+                <form method="post" action="{{ url_for('shop.add_to_cart', product_id=product.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                    <button class="button button-gold add-to-bag" type="submit">Add to bag <span aria-hidden="true">↗</span></button>
+                </form>
+            {% else %}<p class="availability unavailable">Currently unavailable. Ask us about the next arrival.</p>{% endif %}
+            <button class="wishlist-button detail-wishlist" type="button" data-wishlist-id="{{ product.id }}" aria-pressed="false">♡ <span>Add to saved pieces</span></button>
+            <div class="product-assurances">
+                <p><span>✦</span> <strong>Estimated delivery within 7 days</strong><small>Delivery charges confirmed before your order is final.</small></p>
+                <p><span>↗</span> <strong>Personal order confirmation</strong><small>We'll confirm availability and details with you on WhatsApp.</small></p>
+            </div>
+            <a class="product-question" href="https://wa.me/917259770322?text={{ ('Hello, I have a question about ' ~ product.name)|urlencode }}">Questions about this piece? Ask us ↗</a>
+            <a class="product-question" href="https://wa.me/?text={{ (product.name ~ ' — ' ~ request.url)|urlencode }}">Share this piece on WhatsApp ↗</a>
+        </div>
+    </div>
+</section>
+<section class="related-section product-reviews">
+    <p class="eyebrow"><span class="eyebrow-line"></span>VERIFIED CUSTOMER REVIEWS</p>
+    <h2>Reviews{% if review_average %} · {{ "%.1f"|format(review_average) }} / 5{% endif %}</h2>
+    {% for review in reviews %}
+        <article class="product-review">
+            <p class="review-stars" aria-label="{{ review.rating }} out of 5 stars">{{ "★" * review.rating }}{{ "☆" * (5 - review.rating) }}</p>
+            <h3>{{ review.title }}</h3>
+            <p>{{ review.body }}</p>
+            <small>Verified purchase</small>
+        </article>
+    {% else %}
+        <p>No approved reviews yet.</p>
+    {% endfor %}
+    {% if review_items %}
+        <h3>Review a completed purchase</h3>
+        {% for item in review_items %}
+            <form class="review-form" method="post" action="{{ url_for('shop.submit_review', product_id=product.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                <input type="hidden" name="order_item_id" value="{{ item.id }}">
+                <label for="review-rating-{{ item.id }}">Rating
+                    <select id="review-rating-{{ item.id }}" name="rating" required>
+                        <option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Poor</option><option value="1">1 — Bad</option>
+                    </select>
+                </label>
+                <label for="review-title-{{ item.id }}">Title<input id="review-title-{{ item.id }}" name="title" maxlength="120" minlength="3" required></label>
+                <label for="review-body-{{ item.id }}">Your review<textarea id="review-body-{{ item.id }}" name="body" minlength="10" maxlength="2000" rows="4" required></textarea></label>
+                <button class="button button-gold" type="submit">Submit for approval</button>
+            </form>
+        {% endfor %}
+    {% elif current_user.is_authenticated %}
+        <p>Reviews are available after your order is marked fulfilled.</p>
+    {% else %}
+        <p><a href="{{ url_for('auth.login', next=request.full_path) }}">Sign in</a> to review a fulfilled purchase.</p>
+    {% endif %}
+</section>
+{% if related_products %}
+<section class="related-section"><p class="eyebrow"><span class="eyebrow-line"></span>KEEP EXPLORING</p><h2>More to discover</h2><div class="product-grid">{% for product in related_products %}{% include "shop/_product_card.html" %}{% endfor %}</div></section>
+{% endif %}
+{% if not product.is_demo and product.price_paise is not none %}
+<script type="application/ld+json">{{ product_schema|tojson }}</script>
+{% endif %}
+{% endblock %}

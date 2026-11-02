@@ -1,0 +1,37 @@
+{% extends "shop/base.html" %}
+{% block title %}Your bag — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page">
+    <p class="eyebrow"><span class="eyebrow-line"></span><span data-en="YOUR PICKS" data-kn="ನಿಮ್ಮ ಆಯ್ಕೆಗಳು">YOUR PICKS</span></p>
+    <h1 data-en="Your bag." data-kn="ನಿಮ್ಮ ಚೀಲ.">Your bag.</h1>
+    {% if rows %}
+    <div class="cart-layout">
+        <div class="cart-items">
+            {% for row in rows %}
+            <article class="cart-item">
+                <a class="cart-item-image" href="{{ url_for('shop.product_detail', product_id=row.product.id) }}"><img src="{{ row.product.image_url }}" alt="{{ row.product.name }}"></a>
+                <div class="cart-item-copy"><span class="product-category">{{ row.product.category }}</span><h2><a href="{{ url_for('shop.product_detail', product_id=row.product.id) }}">{{ row.product.name }}</a></h2><span>{{ row.product.price_paise|inr }} each</span></div>
+                <form class="cart-quantity" method="post" action="{{ url_for('shop.update_cart', product_id=row.product.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                    <label><span class="visually-hidden">Quantity for {{ row.product.name }}</span><input type="number" name="quantity" min="1" max="{{ row.product.stock_quantity }}" value="{{ row.quantity }}"></label>
+                    <button type="submit" aria-label="Update quantity">↻</button>
+                </form>
+                <strong class="cart-line-total">{{ row.line_total|inr }}</strong>
+                <form method="post" action="{{ url_for('shop.update_cart', product_id=row.product.id) }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><input type="hidden" name="action" value="remove"><button class="remove-item" type="submit">Remove</button></form>
+            </article>
+            {% endfor %}
+        </div>
+        <aside class="cart-summary">
+            <p class="product-category">ORDER SUMMARY</p>
+            <div class="summary-row"><span>Product subtotal</span><strong>{{ subtotal|inr }}</strong></div>
+            <div class="summary-row"><span>Delivery</span><span>Confirmed on WhatsApp</span></div>
+            <p class="summary-note">Estimated delivery within 7 days. Delivery charges and availability are confirmed before your order is final.</p>
+            <a class="button button-gold checkout-button" href="{{ url_for('shop.checkout') }}">Continue to details <span>↗</span></a>
+            <a class="continue-shopping" href="{{ url_for('shop.catalog') }}">← Continue shopping</a>
+        </aside>
+    </div>
+    {% else %}
+    <div class="empty-cart"><span aria-hidden="true">♡</span><h2>Your bag is waiting for something special.</h2><p>Browse the collection and save a piece for later.</p><a class="button button-gold" href="{{ url_for('shop.catalog') }}">Explore the shop ↗</a></div>
+    {% endif %}
+</section>
+{% endblock %}

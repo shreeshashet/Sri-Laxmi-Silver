@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Generate Website - {{ website.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="builder-page">
+
+    <div class="builder-header">
+
+        <div>
+            <div class="eyebrow">
+                SRI LAXMI SILVER WEBSITE GENERATOR
+            </div>
+
+            <h1>
+                {{ website.name }}
+            </h1>
+
+            <p>
+                Your website structure and content are ready.
+            </p>
+        </div>
+
+        <div class="builder-status">
+            <span class="status-badge">
+                Draft
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="generation-grid">
+
+        <section class="generation-card">
+
+            <div class="card-header">
+                <h2>Website Plan</h2>
+                <p>
+                    Pages and sections generated for your website.
+                </p>
+            </div>
+
+            {% if plan and plan.pages %}
+
+                <div class="page-list">
+
+                    {% for page in plan.pages %}
+
+                        <div class="generated-page">
+
+                            <div class="generated-page-header">
+
+                                <div>
+                                    <h3>
+                                        {{ page.title }}
+                                    </h3>
+
+                                    <span class="page-slug">
+                                        /{{ page.slug }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            {% if page.sections %}
+
+                                <div class="section-list">
+
+                                    {% for section in page.sections %}
+
+                                        <div class="section-item">
+                                            {{ section }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>
+                        No pages were generated yet.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <section class="generation-card">
+
+            <div class="card-header">
+                <h2>Generated Content</h2>
+                <p>
+                    Preview the content created for your website.
+                </p>
+            </div>
+
+
+            {% if content %}
+
+                <div class="content-preview">
+
+                    {% for page_slug, page_content in content.items() %}
+
+                        <div class="content-page">
+
+                            <h3>
+                                {{ page_slug|replace("-", " ")|title }}
+                            </h3>
+
+                            {% if page_content is mapping %}
+
+                                {% for key, value in page_content.items() %}
+
+                                    <div class="content-field">
+
+                                        <div class="content-label">
+                                            {{ key|replace("_", " ")|title }}
+                                        </div>
+
+                                        {% if value is string %}
+
+                                            <p>
+                                                {{ value }}
+                                            </p>
+
+                                        {% elif value is sequence and value is not string %}
+
+                                            <ul>
+                                                {% for item in value %}
+                                                    <li>
+                                                        {% if item is mapping %}
+                                                            {{ item.title or item.name or item.description or item }}
+                                                        {% else %}
+                                                            {{ item }}
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+
+                                        {% else %}
+
+                                            <pre>{{ value }}</pre>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <p>
+                                    {{ page_content }}
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <p>
+                        No generated content available.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+
+    <div class="generation-actions">
+
+        <a
+            href="{{ url_for('dashboard.index') }}"
+            class="secondary-button"
+        >
+            ← Dashboard
+        </a>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('builder.save_generation', website_id=website.id) }}"
+        >
+
+            <button
+                type="submit"
+                class="primary-button"
+            >
+                Generate & Open Editor →
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

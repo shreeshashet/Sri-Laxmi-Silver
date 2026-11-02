@@ -1,0 +1,143 @@
+{% extends "shop/base.html" %}
+{% block title %}Shop management — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page admin-page" data-shop-admin>
+    <div class="admin-heading">
+        <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span>PRIVATE STORE TOOLS</p>
+            <h1>Shop management.</h1>
+            <p>One place to manage products, orders, collections and customer feedback.</p>
+        </div>
+        <a class="button button-outline" href="{{ url_for('shop.analytics') }}">View insights ↗</a>
+    </div>
+
+    <section class="admin-dashboard" aria-label="Store overview">
+        <a class="admin-stat admin-stat-action" href="#orders"><span>Needs attention</span><strong>{{ pending_order_count }}</strong><small>orders awaiting WhatsApp confirmation</small></a>
+        <a class="admin-stat admin-stat-action" href="#inventory"><span>Live catalogue</span><strong>{{ live_product_count }}</strong><small>published products · {{ product_count }} total</small></a>
+        <a class="admin-stat admin-stat-action {% if low_stock_count or out_of_stock_count %}admin-stat-alert{% endif %}" href="#inventory"><span>Stock watch</span><strong>{{ low_stock_count + out_of_stock_count }}</strong><small>{{ low_stock_count }} running low · {{ out_of_stock_count }} out of stock</small></a>
+        <a class="admin-stat admin-stat-action {% if reviews %}admin-stat-alert{% endif %}" href="#reviews"><span>Review queue</span><strong>{{ reviews|length }}</strong><small>customer reviews to moderate</small></a>
+    </section>
+    <nav class="admin-quick-links" aria-label="Admin sections">
+        <a href="#add-product">Add product</a><a href="#orders">Orders</a><a href="#collections">Collections</a><a href="#promotions">Coupons</a><a href="#reviews">Reviews</a><a href="#inventory">Inventory</a>
+    </nav>
+
+    <div class="admin-cards">
+        <section class="admin-panel" id="add-product">
+            <p class="product-category">CATALOGUE</p><h2>Add a product</h2>
+            <p>Use verified details. Sample products are clearly labelled and cannot be ordered.</p>
+            <form class="admin-product-form" method="post" action="{{ url_for('shop.create_product') }}">
+                <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                <label>Product name<input name="name" maxlength="160" required></label>
+                <label>Category<select name="category" required><option value="Jewellery">Jewellery</option><option value="Keepsakes">Keepsakes</option></select></label>
+                <label>Collection<select name="collection_id"><option value="">No collection</option>{% for collection in collections %}<option value="{{ collection.id }}">{{ collection.name }}</option>{% endfor %}</select></label>
+                <label>Price (₹)<input name="price" type="number" min="0.01" step="0.01" required></label>
+                <label>Stock quantity<input name="stock_quantity" type="number" min="0" max="100000" value="0" required></label>
+                <label class="admin-wide">Image URL (HTTPS or /static/)<input name="image_url" type="text" maxlength="1000" placeholder="https://… or /static/…" required data-image-input><span class="admin-image-preview-wrap"><img class="admin-image-preview" alt="Product image preview" data-image-preview hidden><span data-image-preview-empty>Image preview will appear here</span></span></label>
+                <label class="admin-wide">Description<textarea name="description" maxlength="5000" rows="3"></textarea></label>
+                <label class="check-label"><input type="checkbox" name="is_published"> Publish on storefront</label>
+                <label class="check-label"><input type="checkbox" name="is_demo"> Mark as demo (not orderable)</label>
+                <button class="button button-gold" type="submit">Add product ↗</button>
+            </form>
+            {% if not products %}<form method="post" action="{{ url_for('shop.seed_demo_products') }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><button class="button button-outline" type="submit">Add clearly labelled sample products</button></form>{% endif %}
+        </section>
+
+        <section class="admin-panel admin-order-panel" id="orders">
+            <div class="admin-section-title"><div><p class="product-category">CUSTOMER ORDERS</p><h2>Order desk</h2></div><span>Latest {{ orders|length }} / {{ status_counts.values()|sum }} total</span></div>
+            <form class="admin-filter-form" method="get" action="{{ url_for('shop.admin') }}#orders">
+                <label>Search orders<input type="search" name="order_q" value="{{ order_search }}" placeholder="Order number, customer, phone"></label>
+                <label>Status<select name="status"><option value="">All statuses</option>{% for status, label in statuses.items() %}<option value="{{ status }}" {% if order_status == status %}selected{% endif %}>{{ label }} ({{ status_counts.get(status, 0) }})</option>{% endfor %}</select></label>
+                <button class="button button-gold" type="submit">Filter orders</button>
+                {% if order_status or order_search %}<a class="button button-outline" href="{{ url_for('shop.admin', _anchor='orders') }}">Clear</a>{% endif %}
+            </form>
+            {% for order in orders %}
+            <article class="admin-order">
+                <div class="admin-order-top"><strong>{{ order.order_number }}</strong><span class="order-status status-{{ order.status }}">{{ statuses[order.status] }}</span></div>
+                <p>{{ order.customer_name }} · <a href="tel:{{ order.customer_phone }}">{{ order.customer_phone }}</a></p>
+                <p>{{ order.items|length }} line item(s) · {{ order.subtotal_paise|inr }} subtotal</p>
+                <ul class="admin-order-items">{% for item in order.items %}<li>{{ item.product_name }} × {{ item.quantity }}</li>{% endfor %}</ul>
+                <p class="admin-order-address">{{ order.delivery_address }}, {{ order.delivery_postal_code }}</p>
+                <form method="post" action="{{ url_for('shop.update_order', order_id=order.id) }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><select name="status" aria-label="Update order status">{% for status, label in statuses.items() %}<option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><button type="submit">Update status</button></form>
+            </article>
+            {% else %}<p class="admin-empty">No matching orders. Orders created through WhatsApp checkout will appear here.</p>{% endfor %}
+        </section>
+    </div>
+
+    <section class="admin-panel collection-panel" id="collections">
+        <div class="admin-section-title"><div><p class="product-category">STOREFRONT ORGANIZATION</p><h2>Named collections</h2></div><span>{{ collections|length }} total</span></div>
+        <p>Create themed collections such as New Arrivals or Festival Gifts, then assign products above or in the inventory editor.</p>
+        <form class="admin-product-form" method="post" action="{{ url_for('shop.create_collection') }}">
+            <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+            <label>Collection name<input name="name" maxlength="100" minlength="2" placeholder="e.g. Festival Gifts" required></label>
+            <label class="admin-wide">Description<textarea name="description" maxlength="500" rows="2" placeholder="A short introduction shown on the storefront"></textarea></label>
+            <label class="check-label"><input type="checkbox" name="is_published"> Show collection on storefront</label>
+            <button class="button button-gold" type="submit">Create collection</button>
+        </form>
+        {% for collection in collections %}
+        <article class="admin-collection">
+            <div><strong>{{ collection.name }}</strong><span>{{ collection.products|length }} products · {{ "Published" if collection.is_published else "Hidden" }}</span>{% if collection.description %}<p>{{ collection.description }}</p>{% endif %}</div>
+            <form method="post" action="{{ url_for('shop.toggle_collection', collection_id=collection.id) }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><button class="button button-outline" type="submit">{{ "Hide" if collection.is_published else "Publish" }}</button></form>
+        </article>
+        {% else %}<p class="admin-empty">No collections yet. Create one to group products into themed storefront pages.</p>{% endfor %}
+    </section>
+
+    <section class="admin-panel coupon-panel" id="promotions">
+        <p class="product-category">PROMOTIONS</p><h2>Coupons</h2>
+        <form class="admin-product-form" method="post" action="{{ url_for('shop.create_coupon') }}">
+            <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+            <label>Coupon code<input name="code" maxlength="40" pattern="[A-Za-z0-9_-]{3,40}" required></label>
+            <label>Discount type<select name="discount_type" required data-discount-type><option value="percent">Percent</option><option value="fixed">Fixed ₹ amount</option></select></label>
+            <label>Discount value<input name="discount_value" type="number" min="1" step="1" required data-discount-value></label>
+            <label>Minimum order (₹)<input name="minimum_subtotal" type="number" min="0" step="0.01"></label>
+            <button class="button button-gold" type="submit">Create coupon</button>
+        </form>
+        {% for coupon in coupons %}
+            <article class="admin-coupon">
+                <strong>{{ coupon.code }}</strong>
+                <span>{% if coupon.discount_type == 'percent' %}{{ coupon.discount_value }}% off{% else %}{{ (coupon.discount_value / 100)|inr }} off{% endif %}</span>
+                <span>{{ "Active" if coupon.is_active else "Inactive" }}</span>
+                <form method="post" action="{{ url_for('shop.toggle_coupon', coupon_id=coupon.id) }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><button class="button button-outline" type="submit">{{ "Disable" if coupon.is_active else "Enable" }}</button></form>
+            </article>
+        {% else %}<p class="admin-empty">No coupons created yet.</p>{% endfor %}
+    </section>
+
+    <section class="admin-panel review-moderation" id="reviews">
+        <p class="product-category">CUSTOMER FEEDBACK</p><h2>Reviews waiting for approval</h2>
+        {% for review in reviews %}
+            <article class="admin-review">
+                <h3>{{ review.title }} · {{ review.rating }}/5</h3>
+                <p>{{ review.product.name }} · {{ review.customer.name or review.customer.email }}</p>
+                <p>{{ review.body }}</p>
+                <form method="post" action="{{ url_for('shop.moderate_review', review_id=review.id) }}"><input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}"><button class="button button-gold" name="status" value="approved" type="submit">Approve</button><button class="button button-outline" name="status" value="rejected" type="submit">Reject</button></form>
+            </article>
+        {% else %}<p class="admin-empty">No reviews need moderation.</p>{% endfor %}
+    </section>
+
+    <section class="admin-panel inventory-panel" id="inventory">
+        <div class="admin-section-title"><div><p class="product-category">INVENTORY</p><h2>Products</h2></div><span>{{ products|length }} total</span></div>
+        <div class="admin-inventory-filters">
+            <label>Find a product<input type="search" placeholder="Search product names…" data-inventory-search></label>
+            <label>Show<select data-inventory-status><option value="">All products</option><option value="published">Published</option><option value="hidden">Hidden</option><option value="low-stock">Low stock (1–5)</option><option value="out-of-stock">Out of stock</option></select></label>
+        </div>
+        <p class="admin-empty" data-inventory-empty hidden>No products match these filters.</p>
+        {% for product in products %}
+        <details class="inventory-item" data-inventory-item data-name="{{ product.name|lower }}" data-status="{{ 'published' if product.is_published else 'hidden' }}" data-stock="{{ 'demo' if product.is_demo else ('out-of-stock' if product.stock_quantity == 0 else ('low-stock' if product.stock_quantity <= 5 else 'in-stock')) }}">
+            <summary><span>{{ product.name }}{% if product.is_demo %}<small> · SAMPLE</small>{% endif %}</span><span>{{ "Published" if product.is_published else "Hidden" }} · {{ product.stock_quantity }} in stock</span></summary>
+            <form class="admin-product-form" method="post" action="{{ url_for('shop.update_product', product_id=product.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ shop_csrf_token() }}">
+                <label>Product name<input name="name" value="{{ product.name }}" maxlength="160" required></label>
+                <label>Category<select name="category"><option value="Jewellery" {% if product.category == 'Jewellery' %}selected{% endif %}>Jewellery</option><option value="Keepsakes" {% if product.category == 'Keepsakes' %}selected{% endif %}>Keepsakes</option></select></label>
+                <label>Collection<select name="collection_id"><option value="">No collection</option>{% for collection in collections %}<option value="{{ collection.id }}" {% if product.collection_id == collection.id %}selected{% endif %}>{{ collection.name }}</option>{% endfor %}</select></label>
+                <label>Price (₹)<input name="price" type="number" min="0.01" step="0.01" value="{{ '%.2f'|format(product.price_paise / 100) if product.price_paise is not none else '' }}" required></label>
+                <label>Stock quantity<input name="stock_quantity" type="number" min="0" max="100000" value="{{ product.stock_quantity }}" required></label>
+                <label class="admin-wide">Image URL<input name="image_url" type="text" value="{{ product.image_url }}" maxlength="1000" required data-image-input><span class="admin-image-preview-wrap"><img class="admin-image-preview" src="{{ product.image_url }}" alt="Preview of {{ product.name }}" data-image-preview><span data-image-preview-empty hidden>Image preview unavailable</span></span></label>
+                <label class="admin-wide">Description<textarea name="description" maxlength="5000" rows="3">{{ product.description }}</textarea></label>
+                <label class="check-label"><input type="checkbox" name="is_published" {% if product.is_published %}checked{% endif %}> Published</label>
+                <label class="check-label"><input type="checkbox" name="is_demo" {% if product.is_demo %}checked{% endif %}> Demo / not for sale</label>
+                <button class="button button-gold" type="submit">Save changes</button>
+            </form>
+        </details>
+        {% else %}<p class="admin-empty">No products yet. Add verified products above.</p>{% endfor %}
+    </section>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/shop-admin.js') }}"></script>{% endblock %}

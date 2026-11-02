@@ -1,0 +1,19 @@
+<article class="product-card" data-product-id="{{ product.id }}" data-category="{{ product.category|lower }}">
+    <div class="product-card-visual">
+        <a class="product-image" href="{{ url_for('shop.product_detail', product_id=product.id) }}" aria-label="View {{ product.name }}">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+            {% if product.is_demo %}<span class="product-badge" data-en="SAMPLE · NOT FOR SALE" data-kn="ಮಾದರಿ · ಮಾರಾಟಕ್ಕಿಲ್ಲ">SAMPLE · NOT FOR SALE</span>{% elif product.stock_quantity < 1 %}<span class="product-badge" data-en="SOLD OUT" data-kn="ಮಾರಾಟವಾಗಿದೆ">SOLD OUT</span>{% endif %}
+        </a>
+        <button class="wishlist-button" type="button" data-wishlist-id="{{ product.id }}" aria-label="Save {{ product.name }}" aria-pressed="false">♡</button>
+    </div>
+    <div class="product-meta">
+        <span class="product-category">{{ product.category }}</span>
+        {% if product.collection and product.collection.is_published %}<a class="product-card-collection" href="{{ url_for('shop.collection_detail', slug=product.collection.slug) }}">{{ product.collection.name }}</a>{% endif %}
+        <h3><a href="{{ url_for('shop.product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+        <div class="product-price-row">
+            {% if not product.is_demo and product.price_paise is not none %}<span class="product-price">{{ product.price_paise|inr }}</span>{% else %}<span class="product-price product-price-note" data-en="Price on confirmation" data-kn="ಬೆಲೆ ದೃಢೀಕರಣದ ನಂತರ">Price on confirmation</span>{% endif %}
+            {% if product.is_demo %}<span class="stock-note">Sample</span>{% elif product.stock_quantity > 0 %}<span class="stock-note" data-en="In stock" data-kn="ಲಭ್ಯವಿದೆ">In stock</span>{% else %}<span class="stock-note" data-en="Unavailable" data-kn="ಲಭ್ಯವಿಲ್ಲ">Unavailable</span>{% endif %}
+        </div>
+        <a class="product-view-link" href="{{ url_for('shop.product_detail', product_id=product.id) }}"><span data-en="View details" data-kn="ವಿವರ ನೋಡಿ">View details</span><span aria-hidden="true">↗</span></a>
+    </div>
+</article>

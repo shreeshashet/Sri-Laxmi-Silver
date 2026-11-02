@@ -1,0 +1,28 @@
+{% extends "shop/base.html" %}
+{% block title %}Privacy notice — Sri Laxmi Silver{% endblock %}
+{% block description %}How Sri Laxmi Silver uses account, order, and delivery details submitted through this website.{% endblock %}
+{% block content %}
+<section class="shop-simple-page info-page help-page">
+    <p class="eyebrow"><span class="eyebrow-line"></span>YOUR INFORMATION</p>
+    <h1>Privacy notice.</h1>
+    <p class="info-page-lead">This notice explains the information used by the current Sri Laxmi Silver website. Contact the store if you have a question or need to correct your details.</p>
+    <div class="faq-list">
+        <details class="faq-item" open>
+            <summary>What information is collected?</summary>
+            <p>Your account uses your name, email address, and password. When you submit an order, the website also saves your phone number, delivery address, PIN code, selected items, and order status so you and the store can manage that order.</p>
+        </details>
+        <details class="faq-item">
+            <summary>How are orders and reviews used?</summary>
+            <p>Order details are available to the customer signed in to that account and to the configured store owner. Reviews can only be submitted for fulfilled purchases; approved review text and ratings appear on the product page without publishing your account email.</p>
+        </details>
+        <details class="faq-item">
+            <summary>Are payments or marketing tracking active?</summary>
+            <p>Online payment processing, marketing emails, paid-ad tracking, and traffic analytics are not connected. If you choose to open WhatsApp, Instagram, or the embedded map, those services handle that visit under their own privacy terms.</p>
+        </details>
+        <details class="faq-item">
+            <summary>How can I request a correction?</summary>
+            <p>Contact Sri Laxmi Silver through the <a href="{{ url_for('shop.contact') }}">contact page</a> to ask about correcting account or order information. Order records may be needed to manage or verify a purchase.</p>
+        </details>
+    </div>
+</section>
+{% endblock %}

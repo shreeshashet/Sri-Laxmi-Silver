@@ -1,0 +1,31 @@
+{% extends "shop/base.html" %}
+{% block title %}About Sri Laxmi Silver — Silver Jewellery & Articles{% endblock %}
+{% block description %}Discover Sri Laxmi Silver in Nagarabhavi, Bengaluru, and explore the collection online or in store.{% endblock %}
+{% block content %}
+<section class="info-hero">
+    <p class="eyebrow"><span class="eyebrow-line"></span><span data-en="A LITTLE ABOUT US" data-kn="ನಮ್ಮ ಬಗ್ಗೆ ಸ್ವಲ್ಪ">A LITTLE ABOUT US</span></p>
+    <h1 data-en="Silver is more than a moment." data-kn="ಬೆಳ್ಳಿ ಒಂದು ಕ್ಷಣಕ್ಕಿಂತ ಹೆಚ್ಚು.">Silver is more than a moment.</h1>
+    <p data-en="Sri Laxmi Silver is a silver jewellery and articles store in Nagarabhavi, Bengaluru. Browse a selection online, then visit or message us to discover current designs and availability." data-kn="ಶ್ರೀ ಲಕ್ಷ್ಮಿ ಸಿಲ್ವರ್ ಬೆಂಗಳೂರಿನ ನಾಗರಭಾವಿಯಲ್ಲಿರುವ ಬೆಳ್ಳಿ ಆಭರಣ ಮತ್ತು ವಸ್ತುಗಳ ಮಳಿಗೆ. ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಆಯ್ಕೆಗಳನ್ನು ನೋಡಿ, ನಂತರ ಪ್ರಸ್ತುತ ವಿನ್ಯಾಸ ಮತ್ತು ಲಭ್ಯತೆಗಾಗಿ ಮಳಿಗೆಗೆ ಬನ್ನಿ ಅಥವಾ ಸಂದೇಶ ಕಳುಹಿಸಿ.">Sri Laxmi Silver is a silver jewellery and articles store in Nagarabhavi, Bengaluru. Browse a selection online, then visit or message us to discover current designs and availability.</p>
+    <a class="button button-gold" href="{{ url_for('shop.catalog') }}"><span data-en="Explore the collection" data-kn="ಸಂಗ್ರಹವನ್ನು ನೋಡಿ">Explore the collection</span><span aria-hidden="true">↗</span></a>
+</section>
+<section class="info-page-grid">
+    <article class="info-feature">
+        <span class="info-feature-mark" aria-hidden="true">✳</span>
+        <p class="product-category" data-en="A PERSONAL WAY TO DISCOVER" data-kn="ಆತ್ಮೀಯವಾಗಿ ಆಯ್ಕೆಮಾಡಿ">A PERSONAL WAY TO DISCOVER</p>
+        <h2 data-en="Take your time. Find what feels right." data-kn="ಆರಾಮವಾಗಿ ನೋಡಿ. ನಿಮಗೆ ಇಷ್ಟವಾದುದನ್ನು ಆರಿಸಿ.">Take your time. Find what feels right.</h2>
+        <p data-en="Explore the online shop at your own pace, or get in touch with the store about designs, product details and availability. The team can help you with the next step." data-kn="ಆನ್‌ಲೈನ್ ಅಂಗಡಿಯಲ್ಲಿ ಆರಾಮವಾಗಿ ನೋಡಿ, ಅಥವಾ ವಿನ್ಯಾಸ, ಉತ್ಪನ್ನದ ವಿವರ ಮತ್ತು ಲಭ್ಯತೆಗಾಗಿ ಮಳಿಗೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ. ಮುಂದಿನ ಹಂತದಲ್ಲಿ ತಂಡವು ಸಹಾಯ ಮಾಡುತ್ತದೆ.">Explore the online shop at your own pace, or get in touch with the store about designs, product details and availability. The team can help you with the next step.</p>
+    </article>
+    <aside class="info-contact-card">
+        <p class="product-category" data-en="FIND US" data-kn="ನಮ್ಮ ವಿಳಾಸ">FIND US</p>
+        <h2 data-en="Come say hello." data-kn="ಬಂದು ಭೇಟಿ ನೀಡಿ.">Come say hello.</h2>
+        <address>No. 14, Kalyan Nagar,<br>Nagarabhavi Road,<br>Bengaluru – 560072</address>
+        <a href="tel:+917259770322">+91 72597 70322</a>
+        <a class="button button-gold" href="{{ url_for('shop.contact') }}"><span data-en="Visit & contact" data-kn="ಭೇಟಿ ಮತ್ತು ಸಂಪರ್ಕ">Visit &amp; contact</span><span aria-hidden="true">↗</span></a>
+    </aside>
+</section>
+<section class="info-bottom-cta">
+    <p class="eyebrow"><span class="eyebrow-line"></span><span data-en="YOUR NEXT FAVOURITE MAY BE CLOSER THAN YOU THINK" data-kn="ನಿಮ್ಮ ಮುಂದಿನ ಮೆಚ್ಚಿನ ಆಯ್ಕೆ ಇಲ್ಲೇ ಇರಬಹುದು">YOUR NEXT FAVOURITE MAY BE CLOSER THAN YOU THINK</span></p>
+    <h2 data-en="A little silver. A lot to remember." data-kn="ತುಸು ಬೆಳ್ಳಿ. ನೆನಪಿನಲ್ಲಿ ಉಳಿಯುವ ಕ್ಷಣಗಳು.">A little silver. A lot to remember.</h2>
+    <a class="text-link" href="{{ url_for('shop.help_page') }}"><span data-en="Questions before you shop? Start here" data-kn="ಖರೀದಿಗೂ ಮುನ್ನ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ? ಇಲ್ಲಿ ನೋಡಿ">Questions before you shop? Start here</span><span aria-hidden="true">→</span></a>
+</section>
+{% endblock %}

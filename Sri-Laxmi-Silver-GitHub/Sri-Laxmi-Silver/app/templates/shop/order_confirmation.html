@@ -1,0 +1,13 @@
+{% extends "shop/base.html" %}
+{% block title %}Order details ready — Sri Laxmi Silver{% endblock %}
+{% block content %}
+<section class="shop-simple-page order-success">
+    <div class="success-icon">✓</div>
+    <p class="eyebrow"><span class="eyebrow-line"></span>ORDER DETAILS PREPARED</p>
+    <h1>One last step.</h1>
+    <p>Your order reference is <strong>{{ order.order_number }}</strong>. Send the details to Sri Laxmi Silver on WhatsApp to confirm availability, delivery and final charges. Your order is not confirmed until the store replies.</p>
+    <div class="confirmation-summary"><p><span>Product subtotal</span><strong>{{ order.subtotal_paise|inr }}</strong></p>{% if order.discount_paise %}<p><span>Coupon {{ order.coupon_code }}</span><strong>−{{ order.discount_paise|inr }}</strong></p>{% endif %}<p><span>Products after discount</span><strong>{{ order.total_paise|inr }}</strong></p><p><span>Delivery estimate</span><strong>Within 7 days</strong></p><p><span>Delivery charge</span><strong>To be confirmed</strong></p></div>
+    <a class="button button-gold" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer">Send order on WhatsApp <span>↗</span></a>
+    <a class="continue-shopping" href="{{ url_for('shop.catalog') }}">Continue browsing</a>
+</section>
+{% endblock %}

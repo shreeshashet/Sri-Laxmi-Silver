@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Create account — Sri Laxmi Silver{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+
+        <div class="brand">
+            <div class="brand-mark">S</div>
+            <span>Sri Laxmi Silver</span>
+        </div>
+
+        <div class="auth-header">
+            <h1>Create your account</h1>
+            <p>Create an account with Sri Laxmi Silver.</p>
+        </div>
+
+        <form method="POST" class="auth-form">
+            <input type="hidden" name="next" value="{{ next_url }}">
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Your name"
+                    autocomplete="name"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="At least 8 characters"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="primary-button">
+                Create account
+            </button>
+
+        </form>
+
+        <p class="auth-footer">
+            Already have an account?
+            <a href="{{ url_for('auth.login', next=next_url) }}">Log in</a>
+        </p>
+
+    </div>
+</div>
+{% endblock %}

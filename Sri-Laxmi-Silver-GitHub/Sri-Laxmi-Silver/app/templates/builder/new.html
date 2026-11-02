@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Create Website — Sri Laxmi Silver{% endblock %}
+
+{% block content %}
+
+<div class="builder-page">
+
+    <header class="builder-header">
+
+        <a href="{{ url_for('dashboard.index') }}" class="back-link">
+            ← Dashboard
+        </a>
+
+        <div class="builder-brand">
+            <div class="brand-mark">S</div>
+            <span>Sri Laxmi Silver</span>
+        </div>
+
+    </header>
+
+
+    <main class="builder-main">
+
+        <div class="builder-intro">
+            <p class="eyebrow">Website Builder</p>
+
+            <h1>Let's build your website.</h1>
+
+            <p>
+                Tell us about your business. We'll use this information
+                to create the structure, content and design of your website.
+            </p>
+        </div>
+
+
+        <form class="builder-form" method="POST">
+
+            <section class="builder-section">
+
+                <div class="section-title">
+                    <span>01</span>
+
+                    <div>
+                        <h2>About your business</h2>
+                        <p>Start with the basics.</p>
+                    </div>
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="business_name">
+                            Business name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="business_name"
+                            name="business_name"
+                            placeholder="e.g. Your business"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="business_type">
+                            Business type
+                        </label>
+
+                        <input
+                            type="text"
+                            id="business_type"
+                            name="business_type"
+                            placeholder="e.g. Web design agency"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="description">
+                        What does your business do?
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        placeholder="Describe your business, products or services..."
+                        required
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+            <section class="builder-section">
+
+                <div class="section-title">
+                    <span>02</span>
+
+                    <div>
+                        <h2>Your audience</h2>
+                        <p>Who should this website speak to?</p>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="audience">
+                        Target audience
+                    </label>
+
+                    <textarea
+                        id="audience"
+                        name="audience"
+                        rows="4"
+                        placeholder="e.g. Small business owners looking for professional websites..."
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+            <section class="builder-section">
+
+                <div class="section-title">
+                    <span>03</span>
+
+                    <div>
+                        <h2>Website goals</h2>
+                        <p>What should visitors do?</p>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="goals">
+                        Main goals
+                    </label>
+
+                    <textarea
+                        id="goals"
+                        name="goals"
+                        rows="4"
+                        placeholder="e.g. Get more enquiries, showcase services and build trust..."
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+            <section class="builder-section">
+
+                <div class="section-title">
+                    <span>04</span>
+
+                    <div>
+                        <h2>Design direction</h2>
+                        <p>Give us a sense of your preferred style.</p>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="style">
+                        Preferred style
+                    </label>
+
+                    <select id="style" name="style">
+
+                        <option value="modern">
+                            Modern & minimal
+                        </option>
+
+                        <option value="professional">
+                            Professional & corporate
+                        </option>
+
+                        <option value="creative">
+                            Creative & expressive
+                        </option>
+
+                        <option value="luxury">
+                            Premium & luxurious
+                        </option>
+
+                        <option value="friendly">
+                            Friendly & approachable
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </section>
+
+
+            <div class="builder-actions">
+
+                <a
+                    href="{{ url_for('dashboard.index') }}"
+                    class="secondary-button"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="primary-button generate-button"
+                >
+                    Generate website →
+                </button>
+
+            </div>
+
+        </form>
+
+    </main>
+
+</div>
+
+{% endblock %}

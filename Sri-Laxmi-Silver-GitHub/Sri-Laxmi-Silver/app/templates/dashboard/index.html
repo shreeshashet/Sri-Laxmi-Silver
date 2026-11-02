@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Sri Laxmi Silver{% endblock %}
+
+{% block content %}
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="brand-mark">S</div>
+            <span>Sri Laxmi Silver</span>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="{{ url_for('dashboard.index') }}"
+                class="active"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('builder.new_website') }}"
+            >
+                Projects
+            </a>
+
+            <a href="#">
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="{{ url_for('auth.logout') }}">
+                Log out
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    Workspace
+                </p>
+
+                <h1>
+                    Welcome back{% if user.name %}, {{ user.name }}{% endif %}.
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Manage Sri Laxmi Silver online.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('builder.new_website') }}"
+                class="primary-button create-button"
+            >
+                + Create website
+            </a>
+
+        </header>
+
+
+        <section class="projects-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Your websites
+                    </h2>
+
+                    <p>
+                        Your websites will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    +
+                </div>
+
+                <h3>
+                    Create your first website
+                </h3>
+
+                <p>
+                    Tell us about your business and AI will help
+                    turn your idea into a professional website.
+                </p>
+
+                <a
+                    href="{{ url_for('builder.new_website') }}"
+                    class="primary-button"
+                >
+                    Create website
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}

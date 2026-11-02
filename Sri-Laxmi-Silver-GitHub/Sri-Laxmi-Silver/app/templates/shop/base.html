@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#7f0506">
+    <meta name="description" content="{% block description %}Shop silver jewellery and keepsakes from Sri Laxmi Silver in Bengaluru.{% endblock %}">
+    <title>{% block title %}Shop Sri Laxmi Silver{% endblock %}</title>
+    <meta property="og:title" content="{% block og_title %}Sri Laxmi Silver — Silver Jewellery & Articles{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Discover silver jewellery and keepsakes at Sri Laxmi Silver, Bengaluru.{% endblock %}">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="{{ request.base_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sljw.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sljw-redesign.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shop.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="shop-promise"><span>✦</span> <span data-en="Delivery around 5 km from our store · Coverage and charges confirmed before order" data-kn="ನಮ್ಮ ಅಂಗಡಿಯಿಂದ ಸುಮಾರು 5 ಕಿ.ಮೀ.ವರೆಗೆ ವಿತರಣೆ · ಆರ್ಡರ್‌ಗೂ ಮೊದಲು ಲಭ್ಯತೆ ಮತ್ತು ಶುಲ್ಕ ದೃಢೀಕರಿಸಲಾಗುತ್ತದೆ">Delivery around 5 km from our store · Coverage and charges confirmed before order</span> <span>✦</span></div>
+    <header class="site-header shop-header">
+        <a class="brand" href="{{ url_for('home') }}" aria-label="Sri Laxmi Silver home">
+            <img class="brand-emblem" src="{{ url_for('static', filename='images/sljw-emblem.png') }}" alt="">
+            <span class="brand-wordmark"><span class="brand-name">Sri Laxmi Silver</span><span class="brand-subtitle" data-en="SILVER JEWELLERY & ARTICLES" data-kn="ಬೆಳ್ಳಿ ಆಭರಣಗಳು ಮತ್ತು ವಸ್ತುಗಳು">SILVER JEWELLERY &amp; ARTICLES</span></span>
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+        <nav class="main-nav" aria-label="Shop navigation">
+            <a href="{{ url_for('home') }}" data-en="Home" data-kn="ಮುಖಪುಟ">Home</a>
+            <a href="{{ url_for('shop.catalog') }}" data-en="Shop all" data-kn="ಎಲ್ಲಾ ಉತ್ಪನ್ನಗಳು">Shop all</a>
+            <a href="{{ url_for('shop.collections') }}">Collections</a>
+            <a href="{{ url_for('shop.catalog', category='Jewellery') }}" data-en="Jewellery" data-kn="ಆಭರಣಗಳು">Jewellery</a>
+            <a href="{{ url_for('shop.catalog', category='Keepsakes') }}" data-en="Keepsakes" data-kn="ನೆನಪಿನ ಕಾಣಿಕೆ">Keepsakes</a>
+            <a href="{{ url_for('shop.about') }}" data-en="About us" data-kn="ನಮ್ಮ ಬಗ್ಗೆ">About us</a>
+            <a href="{{ url_for('shop.help_page') }}" data-en="Help" data-kn="ಸಹಾಯ">Help</a>
+            <a href="{{ url_for('shop.privacy') }}">Privacy</a>
+            <button class="wishlist-nav" id="wishlist-toggle" type="button"><span aria-hidden="true">♡</span> <span data-en="Saved" data-kn="ಮೆಚ್ಚಿನವು">Saved</span></button>
+            <a class="bag-link" href="{{ url_for('shop.cart') }}"><span data-en="Bag" data-kn="ಚೀಲ">Bag</span><span class="bag-count">{{ shop_cart_count }}</span></a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('shop.account') }}" data-en="My orders" data-kn="ನನ್ನ ಆರ್ಡರ್‌ಗಳು">My orders</a>
+            {% else %}
+                <a href="{{ url_for('auth.login', next=url_for('shop.account')) }}" data-en="Sign in" data-kn="ಲಾಗಿನ್">Sign in</a>
+                <a href="{{ url_for('auth.register', next=url_for('shop.account')) }}" data-en="Create account" data-kn="ಖಾತೆ ತೆರೆಯಿರಿ">Create account</a>
+            {% endif %}
+            {% if is_shop_admin() %}
+                <a href="{{ url_for('shop.admin') }}" data-en="Manage" data-kn="ನಿರ್ವಹಣೆ">Manage</a>
+                <a href="{{ url_for('shop.analytics') }}" data-en="Insights" data-kn="ವರದಿ">Insights</a>
+            {% endif %}
+            <button class="language-toggle" type="button" aria-label="Switch language to Kannada">ಕನ್ನಡ</button>
+            <a class="nav-enquire" href="https://wa.me/917259770322" target="_blank" rel="noopener noreferrer" data-en="Ask us" data-kn="ವಿಚಾರಿಸಿ">Ask us <span aria-hidden="true">↗</span></a>
+        </nav>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="shop-flashes" role="status">{% for category, message in messages %}<p class="shop-flash shop-flash-{{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
+    {% endwith %}
+
+    <main class="shop-main">{% block content %}{% endblock %}</main>
+
+    <footer class="shop-footer">
+        <a class="brand footer-brand" href="{{ url_for('home') }}">
+            <img class="brand-emblem" src="{{ url_for('static', filename='images/sljw-emblem.png') }}" alt="">
+            <span class="brand-wordmark"><span class="brand-name">Sri Laxmi Silver</span><span class="brand-subtitle">SILVER JEWELLERY &amp; ARTICLES</span></span>
+        </a>
+        <p data-en="A little silver. A lot to remember." data-kn="ತುಸು ಬೆಳ್ಳಿ. ನೆನಪಿನಲ್ಲಿ ಉಳಿಯುವ ಕ್ಷಣಗಳು.">A little silver. A lot to remember.</p>
+        <a href="tel:+917259770322">+91 72597 70322</a>
+        <a href="{{ url_for('shop.catalog') }}">Shop the collection ↗</a>
+        <a href="{{ url_for('shop.contact') }}" data-en="Visit & contact" data-kn="ಭೇಟಿ ಮತ್ತು ಸಂಪರ್ಕ">Visit &amp; contact</a>
+        <a href="{{ url_for('shop.help_page') }}" data-en="Ordering help" data-kn="ಆರ್ಡರ್ ಸಹಾಯ">Ordering help</a>
+        <a href="{{ url_for('shop.privacy') }}">Privacy notice</a>
+        <a href="https://www.instagram.com/sri_laxmi_silver_/" target="_blank" rel="noopener noreferrer" aria-label="Follow Sri Laxmi Silver on Instagram">@sri_laxmi_silver_ on Instagram ↗</a>
+        <span>© 2026 Sri Laxmi Silver · Bengaluru</span>
+    </footer>
+    <a class="whatsapp-float" href="https://wa.me/917259770322" target="_blank" rel="noopener noreferrer" aria-label="Chat with Sri Laxmi Silver on WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.82 11.82 0 0 0 12.1 0C5.53 0 .18 5.34.18 11.92c0 2.1.55 4.14 1.6 5.95L.08 24l6.28-1.65a11.9 11.9 0 0 0 5.72 1.46h.01c6.57 0 11.92-5.35 11.92-11.92 0-3.18-1.24-6.17-3.49-8.41ZM12.1 21.8a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.73.98 1-3.64-.24-.38a9.87 9.87 0 1 1 8.37 4.63Zm5.42-7.4c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.15-.17.2-.35.23-.65.08-.3-.15-1.25-.46-2.38-1.46-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.08-.79.38-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.75-.72 2-1.41.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z"/></svg>
+    </a>
+    <button class="music-toggle" type="button" aria-pressed="false" aria-label="Turn music on">
+        <span aria-hidden="true">♫</span>
+        <span class="music-toggle-label" data-en="Music off" data-kn="ಸಂಗೀತ ಆಫ್">Music off</span>
+    </button>
+    <script src="{{ url_for('static', filename='js/sljw.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

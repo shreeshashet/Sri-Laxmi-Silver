@@ -1,0 +1,55 @@
+{% extends "shop/base.html" %}
+{% block title %}Shop silver jewellery — Sri Laxmi Silver{% endblock %}
+{% block description %}Browse the Sri Laxmi Silver silver jewellery and keepsake collection. Enquire by WhatsApp; delivery is estimated within 7 days.{% endblock %}
+{% block content %}
+<section class="shop-hero">
+    <div class="shop-hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span><span data-en="SRI LAXMI SILVER" data-kn="ಶ್ರೀ ಲಕ್ಷ್ಮಿ ಸಿಲ್ವರ್">SRI LAXMI SILVER</span></p>
+        <h1><span data-en="A little something" data-kn="ನಿಮ್ಮದಾಗಿಸಿಕೊಳ್ಳುವ">A little something</span><br><em data-en="to keep." data-kn="ಸುಂದರ ಆಯ್ಕೆ.">to keep.</em></h1>
+        <p data-en="Explore our silver jewellery and keepsakes. Add your favourites to your bag, then confirm the details with us on WhatsApp." data-kn="ನಮ್ಮ ಬೆಳ್ಳಿ ಆಭರಣಗಳು ಮತ್ತು ನೆನಪಿನ ಕಾಣಿಕೆಗಳನ್ನು ನೋಡಿ. ಮೆಚ್ಚಿನವುಗಳನ್ನು ಚೀಲಕ್ಕೆ ಸೇರಿಸಿ, ನಂತರ ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ವಿವರಗಳನ್ನು ದೃಢೀಕರಿಸಿ.">Explore our silver jewellery and keepsakes. Add your favourites to your bag, then confirm the details with us on WhatsApp.</p>
+        <span class="shop-hero-promise"><strong>7 days</strong><span data-en="estimated delivery" data-kn="ವಿತರಣೆಯ ಅಂದಾಜು">estimated delivery</span></span>
+    </div>
+    <div class="shop-hero-art"><img src="{{ url_for('static', filename='images/sljw-emblem.png') }}" alt=""><span>SRI LAXMI SILVER · BENGALURU</span></div>
+</section>
+
+<section class="catalog-section">
+    <div class="catalog-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span><span data-en="FIND YOUR FAVOURITE" data-kn="ನಿಮ್ಮ ಮೆಚ್ಚಿನ ಆಯ್ಕೆ">FIND YOUR FAVOURITE</span></p><h2 data-en="The collection" data-kn="ಸಂಗ್ರಹ">The collection</h2></div>
+        <p class="catalog-count">{{ products|length }} <span data-en="pieces to explore" data-kn="ಆಯ್ಕೆಗಳನ್ನು ನೋಡಿ">pieces to explore</span></p>
+    </div>
+
+    {% if products|selectattr('is_demo')|list %}
+    <aside class="sample-notice" role="note"><span aria-hidden="true">✳</span><p data-en="These are sample listings, not confirmed store inventory. Product details, prices and availability are confirmed directly with Sri Laxmi Silver. Sample listings cannot be added to the bag." data-kn="ಇವು ಮಾದರಿ ಉತ್ಪನ್ನಗಳು; ಅಂಗಡಿಯ ಖಚಿತ ಸಂಗ್ರಹವಲ್ಲ. ಉತ್ಪನ್ನದ ವಿವರ, ಬೆಲೆ ಮತ್ತು ಲಭ್ಯತೆಯನ್ನು ಶ್ರೀ ಲಕ್ಷ್ಮಿ ಸಿಲ್ವರ್ ಜೊತೆ ದೃಢೀಕರಿಸಿ. ಮಾದರಿ ಉತ್ಪನ್ನಗಳನ್ನು ಚೀಲಕ್ಕೆ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ.">These are sample listings, not confirmed store inventory. Product details, prices and availability are confirmed directly with Sri Laxmi Silver. Sample listings cannot be added to the bag.</p></aside>
+    {% endif %}
+
+    {% if collections %}
+    <nav class="catalog-collections" aria-label="Featured collections">
+        <span>Explore collections</span>
+        {% for collection in collections %}<a href="{{ url_for('shop.collection_detail', slug=collection.slug) }}">{{ collection.name }} ↗</a>{% endfor %}
+        <a href="{{ url_for('shop.collections') }}">View all ↗</a>
+    </nav>
+    {% endif %}
+
+    <form class="catalog-controls" method="get" action="{{ url_for('shop.catalog') }}">
+        <label class="search-field"><span aria-hidden="true">⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Search jewellery and keepsakes" aria-label="Search products" maxlength="100"></label>
+        <select name="category" aria-label="Filter by category">
+            <option value="">All categories</option>
+            {% for category in categories %}<option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>{% endfor %}
+        </select>
+        <select name="sort" aria-label="Sort products">
+            <option value="featured" {% if selected_sort == 'featured' %}selected{% endif %}>Featured</option>
+            <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+            <option value="price-low" {% if selected_sort == 'price-low' %}selected{% endif %}>Price: low to high</option>
+            <option value="price-high" {% if selected_sort == 'price-high' %}selected{% endif %}>Price: high to low</option>
+        </select>
+        <button class="button button-gold" type="submit">Find pieces <span aria-hidden="true">↗</span></button>
+    </form>
+
+    <div class="product-grid catalog-grid" id="catalog-products">
+        {% for product in products %}{% include "shop/_product_card.html" %}{% else %}
+        <div class="empty-catalog-state"><span>✺</span><h3 data-en="A new collection is on its way." data-kn="ಹೊಸ ಸಂಗ್ರಹ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ.">A new collection is on its way.</h3><p data-en="Please visit us in store or message us to ask about current designs." data-kn="ಪ್ರಸ್ತುತ ವಿನ್ಯಾಸಗಳಿಗಾಗಿ ಅಂಗಡಿಗೆ ಬನ್ನಿ ಅಥವಾ ನಮಗೆ ಸಂದೇಶ ಕಳುಹಿಸಿ.">Please visit us in store or message us to ask about current designs.</p><a class="button button-outline" href="https://wa.me/917259770322">Ask us on WhatsApp ↗</a></div>
+        {% endfor %}
+    </div>
+    <p class="delivery-note"><span>✦</span> <span data-en="Estimated delivery within 7 days. Delivery charges are confirmed with you on WhatsApp before your order is final." data-kn="ವಿತರಣೆಯ ಅಂದಾಜು 7 ದಿನಗಳೊಳಗೆ. ಆರ್ಡರ್ ಖಚಿತಪಡಿಸುವ ಮೊದಲು ವಾಟ್ಸಾಪ್‌ನಲ್ಲಿ ವಿತರಣಾ ಶುಲ್ಕವನ್ನು ದೃಢೀಕರಿಸಲಾಗುತ್ತದೆ.">Estimated delivery within 7 days. Delivery charges are confirmed with you on WhatsApp before your order is final.</span></p>
+</section>
+{% endblock %}
